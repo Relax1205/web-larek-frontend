@@ -42,8 +42,12 @@ export class AppData extends Model<IAppState> { // Класс AppData для у�
   }
 
   setProductToBasket(item: Product) { // Метод добавления товара в корзину
-    this.basket.push(item);
+    // Проверяем, если товар уже в корзине, не добавляем его
+    if (!this.basket.some(existingItem => existingItem.id === item.id)) {
+      this.basket.push(item); // Добавляем товар в корзину
+    }
   }
+  
 
   removeProductToBasket(item: Product) { // Метод удаления товара из корзины
     const index = this.basket.indexOf(item);
