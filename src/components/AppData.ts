@@ -41,20 +41,8 @@ export class AppData extends Model<IAppState> { // Класс AppData для у�
     this.emitChanges('preview:changed', item); // Отправка события изменения предпросмотра
   }
 
-  setProductToBasket(item: Product) { 
-    // Если корзина не пуста, запрещаем добавление нового товара
-    if (this.basket.length > 0) {
-      console.warn('Невозможно добавить больше одного товара в корзину.');
-      return;
-    }
-    // Проверяем, есть ли товар уже в корзине
-    const exists = this.basket.some(basketItem => basketItem.id === item.id);
-    if (!exists) {
-      this.basket.push(item);
-      this.emitChanges('basket:changed', this.basket); // Отправка события изменения корзины
-    } else {
-      console.warn(`Product ${item.title} is already in the basket.`);
-    }
+  setProductToBasket(item: Product) { // Метод добавления товара в корзину
+    this.basket.push(item);
   }
 
   removeProductToBasket(item: Product) { // Метод удаления товара из корзины
@@ -100,13 +88,8 @@ export class AppData extends Model<IAppState> { // Класс AppData для у�
     const errors: typeof this.formErrors = {};
 
     if (!this.order.address) { // Проверка наличия адреса
-      errors.address = 'Необходимо указать адрес';
+      errors.address = 'Необходимо указать адресс';
     }
-
-    if (this.order.items.length === 0) { // Проверка на наличие товаров в корзине
-      errors.items = 'Корзина не должна быть пустой';
-    }
-
     this.formErrors = errors; // Установка ошибок формы
     this.events.emit('formErrors:change', this.formErrors); // Отправка события изменения ошибок формы
     return Object.keys(errors).length === 0; // Возвращаем результат проверки
@@ -114,19 +97,12 @@ export class AppData extends Model<IAppState> { // Класс AppData для у�
 
   validateContacts() { // Метод для проверки валидности контактных данных
     const errors: typeof this.formErrors = {};
-
     if (!this.order.email) { // Проверка наличия email
       errors.email = 'Необходимо указать email';
-    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.order.email)) { // Проверка корректности email
-      errors.email = 'Некорректный формат email';
     }
-
     if (!this.order.phone) { // Проверка наличия телефона
       errors.phone = 'Необходимо указать телефон';
-    } else if (!/^\+?\d{10,15}$/.test(this.order.phone)) { // Проверка корректности формата телефона
-      errors.phone = 'Некорректный формат телефона';
     }
-
     this.formErrors = errors; // Установка ошибок формы
     this.events.emit('formErrors:change', this.formErrors); // Отправка события изменения ошибок формы
     return Object.keys(errors).length === 0; // Возвращаем результат проверки
