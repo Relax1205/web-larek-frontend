@@ -48,7 +48,6 @@ export class AppData extends Model<IAppState> { // Класс AppData для у�
     }
   }
   
-
   removeProductToBasket(item: Product) { // Метод удаления товара из корзины
     const index = this.basket.indexOf(item);
     if (index >= 0) {
